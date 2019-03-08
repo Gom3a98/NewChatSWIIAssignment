@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class MessageListener extends Thread {
     
     ServerSocket server;
-    int port = 8877;
+    int port ;
     WritableGUI gui;
     
     public MessageListener(WritableGUI gui, int port){

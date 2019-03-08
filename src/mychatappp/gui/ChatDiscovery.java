@@ -5,10 +5,21 @@
  */
 package mychatappp.gui;
 
+import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import mychatappp.networking.MessageListener;
 
 /**
  *
@@ -16,23 +27,33 @@ import java.util.Vector;
  */
 public class ChatDiscovery extends javax.swing.JFrame {
     
-    Vector<String> vec = new Vector<>();
+   HashSet<Integer>ports = new HashSet<>();
+    int TargetPort;
+    int RecieverPort;
     public ChatDiscovery() {
+       
+        JFrame.setDefaultLookAndFeelDecorated(true);
         initComponents();
-        
+       
             Read();
-            jList1.setListData(vec);
+            jList1.setListData(ports.toArray());
+           
         
+    }
+    public void setPort(int port){
+         RecieverPort = port;
     }
 
     public void Read() {
         File file = new File("Ports.txt");
+        
         Scanner sc = null;
         try {
             sc = new Scanner(file);
             while(sc.hasNextLine()){
                 String str = sc.nextLine();
-                vec.add(str);
+                
+               ports.add(Integer.parseInt(str));
 
             }
 
@@ -50,6 +71,7 @@ public class ChatDiscovery extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,13 +83,30 @@ public class ChatDiscovery extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jList1);
 
         jButton1.setText("Call");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jButton1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButton1KeyPressed(evt);
+            }
+        });
 
-        jButton2.setText("Broad Cast");
+        jButton2.setText("Broad cast");
 
         jButton3.setText("Refresh");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Dis connect");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
             }
         });
 
@@ -77,12 +116,14 @@ public class ChatDiscovery extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-                .addGap(31, 31, 31)
-                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                .addGap(40, 40, 40))
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton4)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,7 +134,8 @@ public class ChatDiscovery extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4))
                 .addContainerGap())
         );
 
@@ -103,9 +145,47 @@ public class ChatDiscovery extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
        
             Read();
-            jList1.setListData(vec);
+            jList1.setListData(ports.toArray());
         
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton1KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1KeyPressed
+         MessageListener listener;
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+         TargetPort  = Integer.parseInt( jList1.getSelectedValue().toString());
+       
+         MainScreen obj = new MainScreen();
+         obj.setPorts(RecieverPort, TargetPort);
+        listener = new MessageListener(obj, RecieverPort);
+        listener.start();
+         obj.setVisible(true);
+         
+   
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        ports.remove(RecieverPort);
+        this.setVisible(false);
+   
+        try {
+             BufferedWriter writer= new BufferedWriter(new FileWriter("Ports.txt"));
+             int i =0;
+             while(i<ports.size()){
+                writer.write(String.valueOf(ports.toArray()[i]));
+                writer.newLine();
+                i++;
+             }
+               writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(PeerForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -147,6 +227,7 @@ public class ChatDiscovery extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables

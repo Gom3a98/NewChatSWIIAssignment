@@ -84,9 +84,10 @@ public class PeerForm extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(PeerForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-    ChatDiscovery obj = new ChatDiscovery();
-    obj.setVisible(true);
-    this.setVisible(false);
+        ChatDiscovery obj = new ChatDiscovery();
+        obj.setPort(portNum);
+        obj.setVisible(true);
+        this.setVisible(false);
 
      
     
