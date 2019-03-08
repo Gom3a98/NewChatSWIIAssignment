@@ -86,6 +86,7 @@ public class PeerForm extends javax.swing.JFrame {
         }
         ChatDiscovery obj = new ChatDiscovery();
         obj.setPort(portNum);
+        
         obj.setVisible(true);
         this.setVisible(false);
 

@@ -22,6 +22,7 @@ public class MainScreen extends javax.swing.JFrame implements WritableGUI {
  
         initComponents();
          receivePort.setText(String.valueOf(RecPort));
+         targetPort.setText(String.valueOf(Tarport));
     }
  public void setPorts(int r , int t) {
         Tarport = t;
@@ -109,6 +110,7 @@ public class MainScreen extends javax.swing.JFrame implements WritableGUI {
         // TODO add your handling code here:
         this.setVisible(true);
         MessageTransmitter transmitter = new MessageTransmitter("["+RecPort+"]: "+message.getText(),"localhost", Tarport);
+        this.write("["+RecPort+"]: "+message.getText());
         transmitter.start();
         message.setText("");
         
@@ -163,6 +165,7 @@ public class MainScreen extends javax.swing.JFrame implements WritableGUI {
 
     @Override
     public void write(String s) {
+        
         chat.append(  s + System.lineSeparator());
       
     }

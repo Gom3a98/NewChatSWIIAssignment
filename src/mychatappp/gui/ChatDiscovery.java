@@ -144,6 +144,7 @@ public class ChatDiscovery extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
        
+            ports.clear();
             Read();
             jList1.setListData(ports.toArray());
         
