@@ -21,6 +21,7 @@ public class MessageTransmitter extends Thread {
     int port;
     
     public MessageTransmitter() {
+        
     }
 
     public MessageTransmitter(String message, String hostname, int port) {

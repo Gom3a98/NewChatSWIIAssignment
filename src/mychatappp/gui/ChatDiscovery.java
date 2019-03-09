@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import mychatappp.networking.MessageListener;
+import mychatappp.networking.MessageTransmitter;
 
 /**
  *
@@ -154,13 +155,15 @@ public class ChatDiscovery extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1KeyPressed
          MessageListener listener;
-
+         MessageTransmitter transmitter ;
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
          TargetPort  = Integer.parseInt( jList1.getSelectedValue().toString());
        
          MainScreen obj = new MainScreen();
          obj.setPorts(RecieverPort, TargetPort);
         listener = new MessageListener(obj, RecieverPort);
+        transmitter = new MessageTransmitter("["+RecieverPort+"]: "+"Hi","localhost", TargetPort);
+        transmitter.start();
         listener.start();
          obj.setVisible(true);
          
